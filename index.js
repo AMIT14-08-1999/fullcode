@@ -18,6 +18,9 @@ connection.once("open", () => {
 app.route("/").get((req, res) => {
     res.json("hello baby how r you");
 })
+app.route("/logic").get((req, res) => {
+    res.json("hello baby how r you...fine?");
+})
 
 app.use(express.json());
 app.use("/user", userRoute);
