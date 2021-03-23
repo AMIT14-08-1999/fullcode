@@ -3,12 +3,12 @@ const app = express();
 const Port = process.env.PORT || 1000;
 const mongoose = require('mongoose');
 const userRoute = require("./routes/user")
-mongoose.connect("mongodb+srv://mainbackend:<password>TdO@mainbackend.i3efy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-});
+// mongoose.connect("mongodb+srv://mainbackend:<password>TdO@mainbackend.i3efy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+//     useNewUrlParser: true,
+//     useFindAndModify: false,
+//     useUnifiedTopology: true,
+//     useCreateIndex: true,
+// });
 const connection = mongoose.connection;
 connection.once("open", () => {
     console.log("Mongoose Connect successfully")
