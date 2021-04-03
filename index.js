@@ -3,7 +3,10 @@ const app = express();
 const Port = process.env.PORT || 1000;
 const mongoose = require('mongoose');
 const userRoute = require("./routes/user")
-mongoose.connect("mongodb+srv://mainbackend:nOgzMsTys79DtXpr@mainbackend.i3efy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+const profileRoute = require("./routes/profile");
+
+
+mongoose.connect("mongodb+srv://users:5HXGpfeypOrebeui@cluster0.5yblz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
@@ -22,10 +25,14 @@ app.route("/logic").get((req, res) => {
     res.json("hello baby how r you...fine?");
 })
 
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use("/user", userRoute);
 
+app.use("/profile", profileRoute);
 
 app.listen(Port, () => console.log(`Your server is running on port ${Port}`))
 
 //nOgzMsTys79DtXpr
+//https://stark-citadel-69831.herokuapp.com/
+//28

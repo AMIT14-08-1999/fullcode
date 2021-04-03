@@ -4,12 +4,12 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require("../conig");
 const jwt = require("jsonwebtoken");
+const middleware = require("../middleware");
 
 
 
 
-
-router.route("/:username").get((req, res) => {
+router.route("/:username").get(middleware.checkToken, (req, res) => {
     User.findOne({ username: req.params.username },
         (err, result) => {
             if (err) return res.status(500).json({ msg: err });
@@ -40,8 +40,13 @@ router.route("/login").post((req, res) => {
         if (result === null) {
             return res.status(403).json("Username incorrect")
         } if (result.password === req.body.password) {
-
-            res.json("Ok")
+            let token = jwt.sign({ username: req.body.username }, config.key, {
+                expiresIn: "24h"
+            });
+            res.json({
+                token: token,
+                msg: "Success",
+            })
         }
         else {
             res.status(403).json("password incorrect")
@@ -68,7 +73,7 @@ router.route("/register").post((req, res) => {
         });
 })
 
-router.route("/update/:username").patch((req, res) => {
+router.route("/update/:username").patch(middleware.checkToken, (req, res) => {
     User.findOneAndUpdate(
         { username: req.params.username },
         { $set: { password: req.body.password } },
