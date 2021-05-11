@@ -32,15 +32,12 @@ const upload = multer({
 
 router
     .route("/add/image")
-    .patch(middleware.checkToken, upload.single("img"), async (req, res) => {
-        await Profile.findOneAndUpdate(
-            { username: req.decoded.username },
-            {
+    .patch(middleware.checkToken, upload.single("img"), async(req, res) => {
+        await Profile.findOneAndUpdate({ username: req.decoded.username }, {
                 $set: {
                     img: req.file.path,
                 }
-            },
-            { new: true },
+            }, { new: true },
             (err, profile) => {
                 if (err) return res.status(500).send(err);
                 const response = {
@@ -67,5 +64,53 @@ router.route("/add").post(middleware.checkToken, (req, res) => {
         }).catch(err => {
             return res.status(400).json({ err: err })
         })
+})
+router.route("/checkProfile").get((req, res) => {
+    Profile.findOne({ username: req.decoded.username }, (err, result) => {
+        if (err) return res.json({ err: err });
+        else if (result == null) {
+            return res.json({ status: false })
+        } else {
+            return res.json({ status: true })
+        }
+    })
+})
+router.route("/getData").get(middleware.checkToken, (req, res) => {
+    Profile.findOne({ username: req.decoded.username }, (err, result) => {
+        if (err) return res.json({ err: err });
+        if (result == null) return res.json({ data: [] })
+        else return res.json({ data: result });
+    })
+});
+router.route("/update").patch(middleware.checkToken, async(req, res) => {
+    let profile = {};
+    await Profile.findOne({ username: req.decoded.username }, (err, result) => {
+        if (err) {
+            profile = {}
+        }
+        if (result != null) {
+            profile = result;
+        }
+
+    })
+
+    Profile.findOneAndUpdate({ username: req.decoded.username }, {
+            $set: {
+                name: req.body.name ? req.body.name : profile.name,
+                profession: req.body.profession ? req.body.profession : profile.profession,
+                DOB: req.body.DOB ? req.body.DOB : profile.DOB,
+                titleline: req.body.titleline ? req.body.titleline : profile.titleline,
+                about: req.body.about ? req.body.about : profile.about,
+            }
+        }, { new: true, },
+        (err, result) => {
+            if (err) return res.json({ err: err });
+            else if (result == null) {
+                return res.json({ data: [] })
+            } else {
+                return res.json({ data: result })
+            }
+        }
+    )
 })
 module.exports = router;

@@ -31,8 +31,8 @@ app.use("/user", userRoute);
 
 app.use("/profile", profileRoute);
 
-app.listen(Port, () => console.log(`Your server is running on port ${Port}`))
+app.listen(Port, "0.0.0.0", () => console.log(`Your server is running on port ${Port}`))
 
 //nOgzMsTys79DtXpr
 //https://stark-citadel-69831.herokuapp.com/
-//28
+//20 end
