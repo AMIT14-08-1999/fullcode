@@ -1,16 +1,13 @@
 const express = require('express');
-const User = require("../models/user.model");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require("../conig");
 const jwt = require("jsonwebtoken");
 const middleware = require("../middleware");
-
-
-
+const Admin = require("../models/admin.model");
 
 router.route("/:username").get(middleware.checkToken, (req, res) => {
-    User.findOne({ username: req.params.username },
+    Admin.findOne({ username: req.params.username },
         (err, result) => {
             if (err) return res.status(500).json({ msg: err });
             res.json({
@@ -18,10 +15,10 @@ router.route("/:username").get(middleware.checkToken, (req, res) => {
                 username: req.params.username
             })
         });
-})
+});
 
 router.route('/checkusername/:username').get((req, res) => {
-    User.findOne({ username: req.params.username },
+    Admin.findOne({ username: req.params.username },
         (err, result) => {
             if (err) return res.status(500).json({ msg: err });
             if (result !== null) {
@@ -32,10 +29,10 @@ router.route('/checkusername/:username').get((req, res) => {
                 Status: false,
             })
         });
-})
+});
 
 router.route("/login").post((req, res) => {
-    User.findOne({ username: req.body.username }, (err, result) => {
+    Admin.findOne({ username: req.body.username }, (err, result) => {
         if (err) return res.status(500).json({ msg: err });
         if (result === null) {
             return res.status(403).json("Username incorrect")
@@ -53,11 +50,10 @@ router.route("/login").post((req, res) => {
         }
     })
 })
-
 router.route("/register").post((req, res) => {
     console.log("Inside the register");
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-    const user = new User({
+    const user = new Admin({
         username: req.body.username,
         password: hashedPassword,
         // password: req.body.password,
@@ -73,8 +69,9 @@ router.route("/register").post((req, res) => {
         });
 })
 
+
 router.route("/update/:username").patch(middleware.checkToken, (req, res) => {
-    User.findOneAndUpdate({ username: req.params.username }, { $set: { password: req.body.password } },
+    Admin.findOneAndUpdate({ username: req.params.username }, { $set: { password: req.body.password } },
         (err, result) => {
             if (err) return res.status(500).json({ msg: err });
             const msg = {
@@ -87,7 +84,7 @@ router.route("/update/:username").patch(middleware.checkToken, (req, res) => {
 })
 
 router.route("/delete/:username").delete((req, res) => {
-    User.findOneAndDelete({ username: req.params.username }, (err, result) => {
+    Admin.findOneAndDelete({ username: req.params.username }, (err, result) => {
         if (err) return res.status(500).json({ msg: err });
         const msg = {
             msg: "username deleted",
