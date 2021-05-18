@@ -37,10 +37,8 @@ router.route("/login").post((req, res) => {
         if (result === null) {
             return res.status(403).json("Username incorrect")
         }
-        if (result.password !== req.body.password) {
-            let token = jwt.sign({ username: req.body.username }, config.key, {
-
-            });
+        if (result.password === req.body.password) {
+            let token = jwt.sign({ username: req.body.username }, config.key, { expiresIn: "24h" });
             res.json({
                 token: token,
                 msg: "Success",

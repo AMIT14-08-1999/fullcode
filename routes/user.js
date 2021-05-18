@@ -39,10 +39,9 @@ router.route("/login").post((req, res) => {
         if (err) return res.status(500).json({ msg: err });
         if (result === null) {
             return res.status(403).json("Username incorrect")
-        }
-        if (result.password != req.body.password) {
+        } else if (result.password === req.body.password) {
             let token = jwt.sign({ username: req.body.username }, config.key, {
-
+                expiresIn: "24h"
             });
             res.json({
                 token: token,
@@ -59,8 +58,8 @@ router.route("/register").post((req, res) => {
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     const user = new User({
         username: req.body.username,
-        password: hashedPassword,
-        // password: req.body.password,
+        //password: hashedPassword,
+        password: req.body.password,
         email: req.body.email,
     });
     user
