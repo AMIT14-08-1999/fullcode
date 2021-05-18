@@ -1,13 +1,12 @@
 const express = require('express');
 const app = express();
 const Port = process.env.PORT || 5000;
-const mongoose = require('mongoose');
 const userRoute = require("./routes/user")
 const profileRoute = require("./routes/profile");
 const adminpanelRoute = require("./routes/admin")
 const path = require("path")
 app.use(express.json());
-
+const hbs = require('express-handlebars');
 
 
 
@@ -24,9 +23,7 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 require('./server/database/database')();
-app.route("/").get((req, res) => {
-    res.json("hello baby how r you");
-})
+
 app.route("/logic").get((req, res) => {
         res.json("hello baby how r you...fine?");
     })
