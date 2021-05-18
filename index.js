@@ -11,24 +11,36 @@ app.use(express.json());
 
 
 
-mongoose.connect("mongodb+srv://users:5HXGpfeypOrebeui@cluster0.5yblz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-});
-const connection = mongoose.connection;
-connection.once("open", () => {
-    console.log("Mongoose Connect successfully")
-})
+// mongoose.connect("mongodb+srv://users:5HXGpfeypOrebeui@cluster0.5yblz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+//     useNewUrlParser: true,
+//     useFindAndModify: false,
+//     useUnifiedTopology: true,
+//     useCreateIndex: true,
+// });
+// const connection = mongoose.connection;
+// connection.once("open", () => {
+//     console.log("Mongoose Connect successfully")
+// })
 
-
+app.use(express.static(path.join(__dirname, 'public')));
+require('./server/database/database')();
 app.route("/").get((req, res) => {
     res.json("hello baby how r you");
 })
 app.route("/logic").get((req, res) => {
-    res.json("hello baby how r you...fine?");
-})
+        res.json("hello baby how r you...fine?");
+    })
+    // setup view engine
+app.set('view engine', 'hbs');
+app.engine('hbs', hbs({
+    extname: 'hbs',
+    defaultView: 'default',
+    layoutsDir: path.join(__dirname, 'views'),
+    partialsDir: path.join(__dirname, 'views/partials')
+}))
+
+// calling routes
+app.use('/', require('./server/router/router'));
 
 app.use("/uploads", express.static("uploads"));
 app.use("/user", userRoute);
